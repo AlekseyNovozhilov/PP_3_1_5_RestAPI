@@ -8,7 +8,7 @@ import ru.kata.spring.boot_security.demo.service.UsersService;
 
 
 @RestController
-@RequestMapping("/users")
+@RequestMapping("/")
 public class UsersController {
 
     private final UsersService us;
@@ -27,37 +27,37 @@ public class UsersController {
     @GetMapping("/{id}")
     public String showUserBiId(@PathVariable("id") int id, Model model) {
         model.addAttribute("user", us.getUserBiId(id));
-        return "users/user";
+        return "users";
     }
 
     @GetMapping("/new")
     public String newUser(Model model) {
         model.addAttribute("user", new User());
-        return "users/new";
+        return "new";
     }
 
     @PostMapping
     public String create(@ModelAttribute("user") User user) {
         us.saveUser(user);
-        return "redirect:/users/users";
+        return "redirect:/users";
     }
 
     @GetMapping("/{id}/edit")
     public String edit(Model model, @PathVariable("id") int id) {
         model.addAttribute("user", us.getUserBiId(id));
-        return "users/edit";
+        return "edit";
     }
 
     @PatchMapping("/{id}")
     public String update(@ModelAttribute("user") User user) {
         us.updateUser(user);
-        return "redirect:/users/users";
+        return "redirect:/users";
     }
 
     @DeleteMapping("/{id}")
     public String delete(@PathVariable("id") int id) {
         us.removeUserBiId(id);
-        return "redirect:/users/users";
+        return "redirect:/users";
     }
 
 }
