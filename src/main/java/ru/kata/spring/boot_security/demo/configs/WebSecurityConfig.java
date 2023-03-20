@@ -7,22 +7,18 @@ import org.springframework.security.authentication.dao.DaoAuthenticationProvider
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
-import org.springframework.security.core.userdetails.User;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.security.provisioning.InMemoryUserDetailsManager;
-import ru.kata.spring.boot_security.demo.service.UsersDetailsService;
+import ru.kata.spring.boot_security.demo.service.AppServiceImpl;
 
 @Configuration
 @EnableWebSecurity
 public class  WebSecurityConfig extends WebSecurityConfigurerAdapter {
     private final SuccessUserHandler successUserHandler;
-    private UsersDetailsService userService;
+    private AppServiceImpl userService;
 
     @Autowired
-    public WebSecurityConfig(SuccessUserHandler successUserHandler, UsersDetailsService userService) {
+    public WebSecurityConfig(SuccessUserHandler successUserHandler, AppServiceImpl userService) {
         this.successUserHandler = successUserHandler;
         this.userService = userService;
 
@@ -37,10 +33,8 @@ public class  WebSecurityConfig extends WebSecurityConfigurerAdapter {
         http
                 .authorizeRequests()
                 .antMatchers("/", "/user").permitAll()
-                .antMatchers("users/user/**").hasAnyRole("USER","ADMIN")
-                .antMatchers("/users/**").hasAnyRole("ADMIN")
-                .antMatchers("users/new/**").hasRole("ADMIN")
-                .antMatchers("users/edit/**").hasRole("ADMIN")
+                .antMatchers("/user/<id>/**").hasAnyRole("USER","ADMIN")
+                .antMatchers("/admin/**").hasAnyRole("ADMIN")
                 .anyRequest().authenticated()
                 .and()
                 .formLogin().successHandler(successUserHandler)

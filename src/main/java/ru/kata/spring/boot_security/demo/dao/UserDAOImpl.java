@@ -9,12 +9,17 @@ import ru.kata.spring.boot_security.demo.model.User;
 import java.util.List;
 
 @Repository
-public class UserDAOImpl implements Dao {
+public class UserDAOImpl implements UserDao {
     @PersistenceContext()
     private EntityManager entityManager;
 
     @Override
-    public User getUserBiId(int id) {
+    public User findByName(String username) {
+        return entityManager.find(User.class, username);
+    }
+
+    @Override
+    public User findBiId(Long id) {
         return entityManager.find(User.class, id);
     }
 
@@ -30,7 +35,7 @@ public class UserDAOImpl implements Dao {
     }
 
     @Override
-    public void removeUserBiId(int id) {
+    public void removeBiId(Long id) {
         entityManager.remove(entityManager.find(User.class, id));
     }
 
