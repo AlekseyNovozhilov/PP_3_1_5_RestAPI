@@ -8,6 +8,8 @@ import ru.kata.spring.boot_security.demo.model.Role;
 import ru.kata.spring.boot_security.demo.model.User;
 import ru.kata.spring.boot_security.demo.service.AppServiceImpl;
 
+import java.util.Set;
+
 @Controller
 @RequestMapping("/admin")
 public class AdminController {
@@ -35,19 +37,20 @@ public class AdminController {
     @GetMapping("/new")
     public String newUser(Model model) {
         model.addAttribute("user", new User());
-        model.addAttribute("role", appServiceImpl.getAllRoles());
+        model.addAttribute("listRoles", appServiceImpl.getAllRoles());
         return "html/new";
     }
 
-    @PostMapping
-    public String create(@ModelAttribute("user") User user, @ModelAttribute("role") Role role) {
+    @PostMapping("/{id}")
+    public String create(@ModelAttribute("user") User user, @RequestParam(value = "name", required = false) Set<Role> roles) {
         appServiceImpl.saveUser(user);
-        //appServiceImpl.findByName(user.getName()).addUserToRole(role);
+        user.setRoles(roles);
         return "redirect:/admin/users";
     }
 
     @GetMapping("/{id}/edit")
     public String editUser(Model model, @PathVariable("id") Long id) {
+        //System.out.println(appServiceImpl.getAllRoles());
         model.addAttribute("user", appServiceImpl.findBiId(id));
         model.addAttribute("allRoles", appServiceImpl.getAllRoles());
         return "html/edit";
@@ -57,7 +60,7 @@ public class AdminController {
     public String update(@ModelAttribute("user") User user) {
 
         appServiceImpl.updateUser(user);
-        System.out.println(user.getRoles());
+        //System.out.println(user.getRoles());
         return "redirect:/admin/users";
     }
 
