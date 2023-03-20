@@ -8,8 +8,6 @@ import ru.kata.spring.boot_security.demo.model.Role;
 import ru.kata.spring.boot_security.demo.model.User;
 import ru.kata.spring.boot_security.demo.service.AppServiceImpl;
 
-import java.util.stream.Collectors;
-
 @Controller
 @RequestMapping("/admin")
 public class AdminController {
@@ -44,12 +42,12 @@ public class AdminController {
     @PostMapping
     public String create(@ModelAttribute("user") User user, @ModelAttribute("role") Role role) {
         appServiceImpl.saveUser(user);
-        appServiceImpl.findByName(user.getName()).addUserToRole(role);
+        //appServiceImpl.findByName(user.getName()).addUserToRole(role);
         return "redirect:/admin/users";
     }
 
     @GetMapping("/{id}/edit")
-    public String edit(Model model, @PathVariable("id") Long id) {
+    public String editUser(Model model, @PathVariable("id") Long id) {
         model.addAttribute("user", appServiceImpl.findBiId(id));
         model.addAttribute("allRoles", appServiceImpl.getAllRoles());
         return "html/edit";

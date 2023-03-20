@@ -7,7 +7,7 @@ import org.springframework.stereotype.Component;
 import javax.persistence.*;
 import java.util.Collection;
 import java.util.List;
-import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @Entity
@@ -35,7 +35,7 @@ public class User implements UserDetails {
             name = "users_roles",
             joinColumns = @JoinColumn(name = "user_id"),
             inverseJoinColumns = @JoinColumn(name = "role_id"))
-    private List<Role> roles;
+    private Set<Role> roles;
 
     public User() {
     }
@@ -126,7 +126,7 @@ public class User implements UserDetails {
         this.id = id;
     }
 
-    public List<Role> getRoles() {
+    public Set<Role> getRoles() {
         return roles;
     }
 
@@ -134,12 +134,12 @@ public class User implements UserDetails {
         return roles.stream().map(Role::getName).collect(Collectors.toList());
     }
 
-    public void setRoles(List<Role> roles) {
+    public void setRoles(Set<Role> roles) {
         this.roles = roles;
     }
 
-    public void addUserToRole(Role role) {
-        roles.add(role);
+    public void addUserToRole(String name) {
+        roles.add(new Role(name));
     }
 
     @Override
