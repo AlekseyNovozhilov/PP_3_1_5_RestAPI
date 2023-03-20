@@ -35,7 +35,7 @@ public class AdminController {
     @GetMapping("/new")
     public String newUser(Model model) {
         model.addAttribute("user", new User());
-        model.addAttribute("role", new Role());
+        model.addAttribute("role", appServiceImpl.getAllRoles());
         return "html/new";
     }
 
@@ -55,7 +55,9 @@ public class AdminController {
 
     @PatchMapping("/{id}")
     public String update(@ModelAttribute("user") User user) {
+
         appServiceImpl.updateUser(user);
+        System.out.println(user.getRoles());
         return "redirect:/admin/users";
     }
 

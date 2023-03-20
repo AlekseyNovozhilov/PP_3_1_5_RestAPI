@@ -71,6 +71,11 @@ public class AppServiceImpl implements AppService {
         return roleDao.getAllRoles();
     }
 
+    @Override
+    public Role getRoleById(Long id) {
+       return roleDao.findById(id);
+    }
+
 
     @Override
     @Transactional

@@ -1,5 +1,6 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://thymeleaf.org">
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org/">
 <head>
     <meta charset="UTF-8">
     <title>Редактирование пользователя</title>
@@ -21,13 +22,19 @@
     <label for="password">Пароль пользователя</label>
     <input type="text" th:field="*{password}" id="password">
     <br>
-    <label>Роли пользователя:
-        <input type="checkbox" name="roles"
-               th:each="role : ${allRoles}"
-               th:text="${role.name}"
+<!--    <label>Роли пользователя:-->
+<!--        <input id="roles "type="checkbox" name="roles"-->
+<!--               th:each="role : ${allRoles}"-->
+<!--               th:text="${role.name}"-->
+<!--               th:value="${role.id}"-->
+<!--               th:field="*{roles}"/> </label>-->
+<!--    <br>-->
+    <label for="roles">Select roles: </label>
+    <th:block th:each="role : ${allRoles}">
+        <input id="roles" type="checkbox" th:field="*{roles}"
                th:value="${role.id}"
-               th:field="*{roles}"/> </label>
-    <br>
+               th:text="${role.name.replaceFirst('ROLE_', '')}" />
+    </th:block>
     <br>
     <input type="submit" value="Изменить"/>
 </form>

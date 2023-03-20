@@ -22,4 +22,6 @@ public interface AppService extends UserDetailsService {
     List<User> getAllUsers();
 
     List<Role> getAllRoles();
+
+    Role getRoleById(Long id);
 }
