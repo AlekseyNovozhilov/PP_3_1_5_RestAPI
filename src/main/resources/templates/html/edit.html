@@ -22,19 +22,11 @@
     <label for="password">Пароль пользователя</label>
     <input type="text" th:field="*{password}" id="password">
     <br>
-<!--    <label>Роли пользователя:-->
-<!--        <input id="roles "type="checkbox" name="roles"-->
-<!--               th:each="role : ${allRoles}"-->
-<!--               th:text="${role.name}"-->
-<!--               th:value="${role.id}"-->
-<!--               th:field="*{roles}"/> </label>-->
-<!--    <br>-->
-    <label for="roles">Select roles: </label>
-    <th:block th:each="role : ${allRoles}">
-        <input id="roles" type="checkbox" th:field="*{roles}"
-               th:value="${role.id}"
-               th:text="${role.name.replaceFirst('ROLE_', '')}" />
-    </th:block>
+    <label for="roles">Роль пользователя</label>
+    <select name="ROLE" class="form-control" id="roles">
+        <option selected value="ROLE_USER">USER</option>
+        <option selected value="ROLE_ADMIN">ADMIN</option>
+    </select>
     <br>
     <input type="submit" value="Изменить"/>
 </form>

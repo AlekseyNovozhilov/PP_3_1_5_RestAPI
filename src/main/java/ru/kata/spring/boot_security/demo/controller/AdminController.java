@@ -8,6 +8,7 @@ import ru.kata.spring.boot_security.demo.model.Role;
 import ru.kata.spring.boot_security.demo.model.User;
 import ru.kata.spring.boot_security.demo.service.AppServiceImpl;
 
+import java.util.HashSet;
 import java.util.Set;
 
 @Controller
@@ -30,7 +31,7 @@ public class AdminController {
     @GetMapping("/{id}")
     public String showBiId(@PathVariable("id") Long id, Model model) {
         model.addAttribute("user", appServiceImpl.findBiId(id));
-        model.addAttribute("role", appServiceImpl.getAllRoles());
+        //model.addAttribute("role", appServiceImpl.getAllRoles());
         return "html/user";
     }
 
@@ -41,27 +42,31 @@ public class AdminController {
         return "html/new";
     }
 
-    @PostMapping("/{id}")
-    public String create(@ModelAttribute("user") User user, @RequestParam(value = "name", required = false) Set<Role> roles) {
+    @PostMapping
+    public String create(@ModelAttribute("user") User user, @RequestParam(name = "ROLE", required = false) String[] role) {
+        Role newUserRole = appServiceImpl.findRoleByName(role[0]);
+        Set<Role> newRole = new HashSet<>();
+        newRole.add(newUserRole);
+        user.setRoles(newRole);
         appServiceImpl.saveUser(user);
-        user.setRoles(roles);
         return "redirect:/admin/users";
     }
 
-    @GetMapping("/{id}/edit")
+    @GetMapping("/edit/{id}")
     public String editUser(Model model, @PathVariable("id") Long id) {
-        //System.out.println(appServiceImpl.getAllRoles());
         model.addAttribute("user", appServiceImpl.findBiId(id));
         model.addAttribute("allRoles", appServiceImpl.getAllRoles());
         return "html/edit";
     }
 
     @PatchMapping("/{id}")
-    public String update(@ModelAttribute("user") User user) {
-
+    public String update(@ModelAttribute("user") User user, @RequestParam(name = "ROLE", required = false) String[] role) {
+        Role newUserRole = appServiceImpl.findRoleByName(role[0]);
+        Set<Role> newRole = new HashSet<>();
+        newRole.add(newUserRole);
+        user.setRoles(newRole);
         appServiceImpl.updateUser(user);
-        //System.out.println(user.getRoles());
-        return "redirect:/admin/users";
+        return "redirect:/admin/user";
     }
 
     @DeleteMapping("/{id}")

@@ -3,6 +3,9 @@ package ru.kata.spring.boot_security.demo.dao;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+
+import org.springframework.context.annotation.Lazy;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Repository;
 import ru.kata.spring.boot_security.demo.model.User;
 
@@ -10,8 +13,13 @@ import java.util.List;
 
 @Repository
 public class UserDAOImpl implements UserDao {
+
     @PersistenceContext()
     private EntityManager entityManager;
+
+    public UserDAOImpl(EntityManager entityManager) {
+        this.entityManager = entityManager;
+    }
 
     @Override
     public User findByName(String username) {

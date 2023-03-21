@@ -1,12 +1,17 @@
 package ru.kata.spring.boot_security.demo.model;
 
+import antlr.BaseAST;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
 import javax.persistence.*;
 import java.util.Collection;
-import java.util.List;
 import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -47,6 +52,11 @@ public class User implements UserDetails {
         this.age = age;
         this.email = email;
         this.password = password;
+    }
+
+    @Lazy
+    public PasswordEncoder passwordEncoder() {
+        return new BCryptPasswordEncoder();
     }
 
     public String getName() {
@@ -116,7 +126,7 @@ public class User implements UserDetails {
     }
 
     public void setPassword(String password) {
-        this.password = password;
+        this.password = passwordEncoder().encode(password);
     }
 
     public Long getId() {
@@ -137,6 +147,13 @@ public class User implements UserDetails {
 
     public void setRoles(Set<Role> roles) {
         this.roles = roles;
+    }
+
+    public Role findRoleByName(String name) {
+        return roles.stream()
+                .filter(r -> Objects.equals(r.getName(), name))
+                .findFirst()
+                .orElse(new Role());
     }
 
 
