@@ -2,11 +2,13 @@ package ru.kata.spring.boot_security.demo.dao;
 
 import org.springframework.stereotype.Repository;
 import ru.kata.spring.boot_security.demo.model.Role;
+import ru.kata.spring.boot_security.demo.model.User;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import java.util.List;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 @Repository
 public class RoleDaoImpl implements RoleDao {
@@ -27,11 +29,19 @@ public class RoleDaoImpl implements RoleDao {
     }
 
     @Override
-    public Role findRoleByName(String name) {
+    public List<String> findNameAllRoles() {
+        return getAllRoles().stream().map(Role::getName).collect(Collectors.toList());
+    }
+
+
+
+    @Override
+    public Role findByName(String name) {
         return getAllRoles()
                 .stream()
                 .filter(r -> Objects.equals(r.getName(), name))
                 .findFirst()
                 .orElse(new Role());
     }
+
 }

@@ -1,78 +1,73 @@
 package ru.kata.spring.boot_security.demo.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import ru.kata.spring.boot_security.demo.model.Role;
 import ru.kata.spring.boot_security.demo.model.User;
-import ru.kata.spring.boot_security.demo.service.AppServiceImpl;
+import ru.kata.spring.boot_security.demo.service.RoleService;
+import ru.kata.spring.boot_security.demo.service.UserService;
 
-import java.util.HashSet;
-import java.util.Set;
+import java.security.Principal;
+import java.util.stream.Collectors;
 
 @Controller
-@RequestMapping("/admin")
 public class AdminController {
 
-    private final AppServiceImpl appServiceImpl;
+    private final RoleService roleService;
+    private final UserService userService;
 
     @Autowired
-    public AdminController(AppServiceImpl appServiceImpl) {
-        this.appServiceImpl = appServiceImpl;
+    public AdminController(RoleService roleService, UserService userService) {
+        this.roleService = roleService;
+        this.userService = userService;
     }
 
-    @GetMapping("/users")
-    public String users(Model model) {
-        model.addAttribute("allUsers", appServiceImpl.getAllUsers());
-        return "html/users";
+    @GetMapping("/admin")
+    public String show(Principal principal, Model model) {
+        User currentUser = userService.findByEmail(principal.getName());
+        model.addAttribute("users", userService.getAllUsers());
+        model.addAttribute("user", currentUser);
+        model.addAttribute("roles", roleService.findAllRoles());
+        return "admin";
     }
 
-    @GetMapping("/{id}")
-    public String showBiId(@PathVariable("id") Long id, Model model) {
-        model.addAttribute("user", appServiceImpl.findBiId(id));
-        //model.addAttribute("role", appServiceImpl.getAllRoles());
-        return "html/user";
+    @GetMapping("newUser")
+    public String newUser(Principal principal, Model model) {
+        User currentUser = userService.findByEmail(principal.getName());
+        model.addAttribute("user", currentUser);
+        model.addAttribute("roles", roleService.findAllRoles());
+        return "new";
     }
 
-    @GetMapping("/new")
-    public String newUser(Model model) {
-        model.addAttribute("user", new User());
-        model.addAttribute("listRoles", appServiceImpl.getAllRoles());
-        return "html/new";
+    @PostMapping("/new")
+    public String createUser(@ModelAttribute("user") User user) {
+        user.setRoles(user.getRoles().stream()
+                .map(role -> roleService.findByName(role.getName()))
+                .collect(Collectors.toSet()));
+        userService.saveUser(user);
+        return "redirect:/admin";
     }
 
-    @PostMapping
-    public String create(@ModelAttribute("user") User user, @RequestParam(name = "ROLE", required = false) String[] role) {
-        Role newUserRole = appServiceImpl.findRoleByName(role[0]);
-        Set<Role> newRole = new HashSet<>();
-        newRole.add(newUserRole);
-        user.setRoles(newRole);
-        appServiceImpl.saveUser(user);
-        return "redirect:/admin/users";
+    @PutMapping("/{id}/edit")
+    public String editUser(@ModelAttribute("user") User user, Model model) {
+        model.addAttribute("roles", roleService.findAllRoles());
+        user.setRoles(user.getRoles().stream()
+                .map(role -> roleService.findByName(role.getName()))
+                .collect(Collectors.toSet()));
+        System.out.println("-----------------");
+        System.out.println(user);
+        System.out.println("-----------------");
+        userService.updateUser(user);
+        return "redirect:/admin";
     }
 
-    @GetMapping("/edit/{id}")
-    public String editUser(Model model, @PathVariable("id") Long id) {
-        model.addAttribute("user", appServiceImpl.findBiId(id));
-        model.addAttribute("allRoles", appServiceImpl.getAllRoles());
-        return "html/edit";
-    }
 
-    @PatchMapping("/{id}")
-    public String update(@ModelAttribute("user") User user, @RequestParam(name = "ROLE", required = false) String[] role) {
-        Role newUserRole = appServiceImpl.findRoleByName(role[0]);
-        Set<Role> newRole = new HashSet<>();
-        newRole.add(newUserRole);
-        user.setRoles(newRole);
-        appServiceImpl.updateUser(user);
-        return "redirect:/admin/user";
+    @DeleteMapping("{id}/delete")
+    public String deleteUser(@PathVariable("id") Long id) {
+        userService.removeBiId(id);
+        return "redirect:/admin";
     }
-
-    @DeleteMapping("/{id}")
-    public String delete(@PathVariable("id") Long id) {
-        appServiceImpl.removeBiId(id);
-        return "redirect:/admin/users";
-    }
-
 }

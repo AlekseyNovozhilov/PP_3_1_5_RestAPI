@@ -1,17 +1,12 @@
 package ru.kata.spring.boot_security.demo.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Bean;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import ru.kata.spring.boot_security.demo.Repository.UserRepository;
-import ru.kata.spring.boot_security.demo.dao.RoleDao;
 import ru.kata.spring.boot_security.demo.dao.UserDao;
 import ru.kata.spring.boot_security.demo.model.Role;
 import ru.kata.spring.boot_security.demo.model.User;
@@ -22,20 +17,24 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 @Service
-public class AppServiceImpl implements AppService {
+public class UserServiceImpl implements UserService {
 
-    private final UserRepository userRepository;
-    private final RoleDao roleDao;
     private final UserDao userDao;
 
     @Autowired
-    public AppServiceImpl(UserRepository userRepository, RoleDao roleDao, UserDao userDao) {
-        this.userRepository = userRepository;
-        this.roleDao = roleDao;
+    public UserServiceImpl(UserDao userDao) {
         this.userDao = userDao;
     }
 
+    @Override
+    public User findByName(String name) {
+        return userDao.findByName(name);
+    }
 
+    @Override
+    public User findByEmail(String email) {
+        return userDao.findByEmail(email);
+    }
 
     @Override
     @Transactional
@@ -67,38 +66,16 @@ public class AppServiceImpl implements AppService {
         return userDao.getAllUsers();
     }
 
-    public User findByUserName(String username) {
-        return userRepository.findByName(username);
-    }
     @Override
     @Transactional
-    public List<Role> getAllRoles() {
-        return roleDao.getAllRoles();
-    }
-
-    @Override
-    @Transactional
-    public Role getRoleById(Long id) {
-       return roleDao.findById(id);
-    }
-
-    @Override
-    public Role findRoleByName(String name) {
-        return roleDao.findRoleByName(name);
-    }
-
-    @Override
-    @Transactional
-    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        User user = findByUserName(username);
+    public UserDetails loadUserByUsername(String userName) throws UsernameNotFoundException {
+        User user = findByEmail(userName);
         if (user == null)
             throw new UsernameNotFoundException("User not found!");
-        return new org.springframework.security.core.userdetails.User(user.getUsername(), user.getPassword(), mapRolesToAuthorities(user.getRoles()));
+        return new org.springframework.security.core.userdetails.User(user.getEmail(), user.getPassword(), mapRolesToAuthorities(user.getRoles()));
     }
 
     private Collection<? extends GrantedAuthority> mapRolesToAuthorities(Set<Role> roles) {
         return roles.stream().map(r -> new SimpleGrantedAuthority(r.getName())).collect(Collectors.toList());
     }
-
-
 }

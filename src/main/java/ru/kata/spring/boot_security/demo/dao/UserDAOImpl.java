@@ -1,15 +1,14 @@
 package ru.kata.spring.boot_security.demo.dao;
 
-
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
-
-import org.springframework.context.annotation.Lazy;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Repository;
 import ru.kata.spring.boot_security.demo.model.User;
 
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
 import java.util.List;
+import java.util.Objects;
+
+
 
 @Repository
 public class UserDAOImpl implements UserDao {
@@ -22,8 +21,21 @@ public class UserDAOImpl implements UserDao {
     }
 
     @Override
-    public User findByName(String username) {
-        return entityManager.find(User.class, username);
+    public User findByName(String name) {
+        return getAllUsers()
+                .stream()
+                .filter(user -> Objects.equals(user.getName(), name))
+                .findFirst()
+                .orElse(new User());
+    }
+
+    @Override
+    public User findByEmail(String email) {
+        return getAllUsers()
+                .stream()
+                .filter(user -> Objects.equals(user.getEmail(), email))
+                .findFirst()
+                .orElse(new User());
     }
 
     @Override
@@ -50,6 +62,7 @@ public class UserDAOImpl implements UserDao {
 
     @Override
     public List<User> getAllUsers() {
-        return entityManager.createQuery("FROM User", User.class).getResultList();
+        return entityManager.createQuery("FROM User", User.class)
+                .getResultList();
     }
 }

@@ -1,17 +1,17 @@
 package ru.kata.spring.boot_security.demo.service;
 
-
-
-
 import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.crypto.password.PasswordEncoder;
-import ru.kata.spring.boot_security.demo.model.Role;
+import org.springframework.stereotype.Component;
 import ru.kata.spring.boot_security.demo.model.User;
 
 import java.util.List;
-import java.util.Optional;
 
-public interface AppService extends UserDetailsService {
+@Component
+public interface UserService extends UserDetailsService {
+
+    User findByName(String name);
+
+    User findByEmail(String email);
 
     User findBiId(Long id);
 
@@ -22,13 +22,5 @@ public interface AppService extends UserDetailsService {
     void removeBiId(Long id);
 
     List<User> getAllUsers();
-
-    List<Role> getAllRoles();
-
-    Role getRoleById(Long id);
-
-    Role findRoleByName(String name);
-    User findByUserName(String username);
-
 
 }
