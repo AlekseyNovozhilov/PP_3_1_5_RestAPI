@@ -9,8 +9,6 @@ import java.util.List;
 @Component
 public interface UserService extends UserDetailsService {
 
-    User findByName(String name);
-
     User findByEmail(String email);
 
     User findBiId(Long id);

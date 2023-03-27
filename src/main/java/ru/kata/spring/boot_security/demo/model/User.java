@@ -146,13 +146,6 @@ public class User implements UserDetails {
         this.roles = roles;
     }
 
-    public Role findRoleByName(String name) {
-        return roles.stream()
-                .filter(r -> Objects.equals(r.getName(), name))
-                .findFirst()
-                .orElse(new Role());
-    }
-
 
     @Override
     public boolean equals(Object o) {

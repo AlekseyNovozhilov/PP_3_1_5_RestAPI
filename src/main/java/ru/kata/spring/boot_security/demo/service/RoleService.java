@@ -13,5 +13,4 @@ public interface RoleService {
 
     List<Role> findAllRoles();
 
-    List<String> findNameAllRoles();
 }

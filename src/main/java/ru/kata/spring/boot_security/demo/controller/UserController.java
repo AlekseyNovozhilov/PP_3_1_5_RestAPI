@@ -22,9 +22,7 @@ public class UserController {
 
     @GetMapping("/user")
     public String showUser(Principal principal, Model model) {
-        System.out.println(principal.getName());
         User currentuser = userService.findByEmail(principal.getName());
-        System.out.println(userService.findByEmail(principal.getName()));
         model.addAttribute("user", currentuser);
         return "user";
     }

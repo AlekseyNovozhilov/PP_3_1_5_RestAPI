@@ -29,19 +29,9 @@ public class RoleDaoImpl implements RoleDao {
     }
 
     @Override
-    public List<String> findNameAllRoles() {
-        return getAllRoles().stream().map(Role::getName).collect(Collectors.toList());
-    }
-
-
-
-    @Override
     public Role findByName(String name) {
-        return getAllRoles()
-                .stream()
-                .filter(r -> Objects.equals(r.getName(), name))
-                .findFirst()
-                .orElse(new Role());
+        return entityManager.createQuery("select role from Role role where role.name =: name", Role.class)
+                .setParameter("name", name).getSingleResult();
     }
 
 }

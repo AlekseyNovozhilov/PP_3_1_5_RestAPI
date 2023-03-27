@@ -6,7 +6,6 @@ import ru.kata.spring.boot_security.demo.model.User;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import java.util.List;
-import java.util.Objects;
 
 
 
@@ -21,21 +20,9 @@ public class UserDAOImpl implements UserDao {
     }
 
     @Override
-    public User findByName(String name) {
-        return getAllUsers()
-                .stream()
-                .filter(user -> Objects.equals(user.getName(), name))
-                .findFirst()
-                .orElse(new User());
-    }
-
-    @Override
     public User findByEmail(String email) {
-        return getAllUsers()
-                .stream()
-                .filter(user -> Objects.equals(user.getEmail(), email))
-                .findFirst()
-                .orElse(new User());
+        return entityManager.createQuery("select user from User user where user.email =: email", User.class)
+                .setParameter("email", email).getSingleResult();
     }
 
     @Override

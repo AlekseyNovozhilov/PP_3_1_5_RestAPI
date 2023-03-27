@@ -69,7 +69,11 @@
                                         <td th:text="${user.lastName}">lastname</td>
                                         <td th:text="${user.age}">age</td>
                                         <td th:text="${user.email}">email</td>
-                                        <td th:text="${user.getUserRole()}">roles</td>
+                                        <td>
+                                            <th:block th:each="role: ${user.roles}"
+                                                      th:text="${role.name} + ' '">
+                                            </th:block>
+                                        </td>
                                         <td>
                                             <a type="button" class="btn btn-sm btn-primary" data-bs-toggle="modal"
                                                data-bs-target="#editModal"
@@ -100,7 +104,7 @@
                                                                    th:value="${user.name}"/>
                                                             <br>
                                                             <label for="lastname0"><b>Lastname</b></label>
-                                                            <input th:name="lastname" th:type="text"
+                                                            <input th:name="lastName" th:type="text"
                                                                    class="form-control" id="lastname0"
                                                                    th:value="${user.lastName}"/>
                                                             <br>
