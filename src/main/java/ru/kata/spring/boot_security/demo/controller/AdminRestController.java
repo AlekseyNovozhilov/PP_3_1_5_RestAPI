@@ -4,12 +4,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import ru.kata.spring.boot_security.demo.Exception.UserNotFoundException;
 import ru.kata.spring.boot_security.demo.model.User;
 import ru.kata.spring.boot_security.demo.service.RoleService;
 import ru.kata.spring.boot_security.demo.service.UserService;
 
-import javax.validation.Valid;
 import java.security.Principal;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -28,30 +26,36 @@ public class AdminRestController {
     }
 
     @GetMapping("/user")
-    public ResponseEntity<User> getUserByUsername (Principal principal) {
+    public ResponseEntity<User> getUserByUsername(Principal principal) {
         User user = userService.findByEmail(principal.getName());
-        return new ResponseEntity<>(user,HttpStatus.OK);
+        return new ResponseEntity<>(user, HttpStatus.OK);
     }
 
     @GetMapping("/users")
     public ResponseEntity<List<User>> getUsers() {
-        return new ResponseEntity<>(userService.getAllUsers(),HttpStatus.OK);
+        return new ResponseEntity<>(userService.getAllUsers(), HttpStatus.OK);
     }
 
     @GetMapping("users/{id}")
-    public ResponseEntity<User> getUser (@PathVariable("id") long id) {
+    public ResponseEntity<User> getUser(@PathVariable("id") long id) {
         User user = userService.findBiId(id);
-        return new ResponseEntity<>(user,HttpStatus.OK);
+        return new ResponseEntity<>(user, HttpStatus.OK);
     }
 
     @PostMapping("/users")
-    public ResponseEntity<HttpStatus> newUser(@Valid @RequestBody User user) {
+    public ResponseEntity<HttpStatus> newUser(@RequestBody User user) {
+        user.setRoles(user.getRoles().stream()
+                .map(role -> roleService.findById(role.getId()))
+                .collect(Collectors.toSet()));
         userService.saveUser(user);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
-    @PutMapping("/users")
+    @PutMapping("/users/{id}")
     public User editUser(@RequestBody User user) {
+        user.setRoles(user.getRoles().stream()
+                .map(role -> roleService.findById(role.getId()))
+                .collect(Collectors.toSet()));
         userService.updateUser(user);
         return user;
     }

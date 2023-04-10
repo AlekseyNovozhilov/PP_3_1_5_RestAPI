@@ -6,7 +6,7 @@ async function getUser() {
         .then(user => {
             temp = `
                 <tr>
-                    <td>${user.userId}</td>
+                    <td>${user.id}</td>
                     <td>${user.name}</td>
                     <td>${user.lastName}</td>
                     <td>${user.age}</td>
@@ -60,18 +60,18 @@ async function getUsers() {
             users.forEach(user => {
                 temp += `
                 <tr>
-                    <td>${user.userId}</td>
+                    <td>${user.id}</td>
                     <td>${user.name}</td>
                     <td>${user.lastName}</td>
                     <td>${user.age}</td>
                     <td>${user.email}</td>
                     <td>${user.roles.map(e => " " + e.name.substr(5))}</td>
                     <td>
-                        <button type="button" data-userid="${user.userId}" data-action="edit" class="btn btn-info"
+                        <button type="button" data-userid="${user.id}" data-action="edit" class="btn btn-info"
                             className data-toggle="modal" data-target="#editModal">Edit</button>
                     </td>
                     <td>
-                        <button type="button" data-userid="${user.userId}" data-action="delete" class="btn btn-danger"
+                        <button type="button" data-userid="${user.id}" data-action="delete" class="btn btn-danger"
                             className data-toggle="modal" data-target="#deleteModal">Delete</button>
                     </td>
                 </tr>

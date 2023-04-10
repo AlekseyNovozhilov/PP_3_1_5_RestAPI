@@ -28,11 +28,11 @@ async function createUser() {
         const response = await userFetch.addNewUser(data);
         if (response.ok) {
             await getUsers();
-            addUserForm.find('#passwordCreate').val('');
             addUserForm.find('#nameCreate').val('');
             addUserForm.find('#lastNameCreate').val('');
             addUserForm.find('#ageCreate').val('');
             addUserForm.find('#emailCreate').val('');
+            addUserForm.find('#passwordCreate').val('');
             addUserForm.find(checkedRoles()).val('');
             let alert = `<div class="alert alert-success alert-dismissible fade show col-12" role="alert" id="successMessage">
                          User create successful!
