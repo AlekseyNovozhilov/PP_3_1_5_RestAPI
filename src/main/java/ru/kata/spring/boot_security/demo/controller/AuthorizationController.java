@@ -6,13 +6,9 @@ import org.springframework.web.bind.annotation.GetMapping;
 @Controller
 public class AuthorizationController {
 
-    @GetMapping("/index")
-    public String showIndex() {
+    @GetMapping("/")
+    public String mainPage() {
         return "index";
     }
-/*
-    @GetMapping("/")
-    public String showPageAuthorization() {
-        return "/html/login";
-    }*/
+
 }

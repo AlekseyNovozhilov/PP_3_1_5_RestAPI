@@ -9,9 +9,9 @@ import org.springframework.stereotype.Component;
 
 import javax.persistence.*;
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 @Entity
 @Table
@@ -38,7 +38,7 @@ public class User implements UserDetails {
             name = "users_roles",
             joinColumns = @JoinColumn(name = "user_id"),
             inverseJoinColumns = @JoinColumn(name = "role_id"))
-    private Set<Role> roles;
+    private Set<Role> roles = new HashSet<>();
 
     public User() {
     }
@@ -138,10 +138,6 @@ public class User implements UserDetails {
         return roles;
     }
 
-    public Collection<? extends String> getUserRole() {
-        return roles.stream().map(Role::getName).collect(Collectors.toList());
-    }
-
     public void setRoles(Set<Role> roles) {
         this.roles = roles;
     }
@@ -171,5 +167,13 @@ public class User implements UserDetails {
                 ", password='" + password + '\'' +
                 ", roles=" + roles +
                 '}';
+    }
+
+    public String roleToString(){
+        StringBuilder sb = new StringBuilder();
+        for(Role role: roles){
+            sb.append(role.getNameRole()).append(" ");
+        }
+        return sb.toString();
     }
 }
